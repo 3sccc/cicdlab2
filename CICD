@@ -30,7 +30,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'make build-docker'
+                sh 'docker build -t myapp:latest .'
             }
         }
 
@@ -38,14 +38,11 @@ pipeline {
             steps {
                 script {
                     if (env.BRANCH_NAME == 'main') {
-                        sh 'make deploy PORT=3000'
+                        sh 'docker run -d -p 3000:3000 --name dev-container myapp:latest'
                     } else if (env.BRANCH_NAME == 'dev') {
-                        sh 'make deploy PORT=3001'
                         sh 'cp src/logo.svg src/logo1.svg'
                         sh 'cp src/logo-dev.svg src/logo.svg'
-                    } else {
-                        echo "Unsupported branch"
-                    }
+                        sh 'docker run -d -p 3001:3001 --name main-container myapp:latest'
                 }
             }
         }
