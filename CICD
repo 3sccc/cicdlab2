@@ -1,0 +1,51 @@
+ stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    checkout scm
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'make build'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'make test'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'make build-docker'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    if (env.BRANCH_NAME == 'main') {
+                        sh 'make deploy PORT=3000'
+                    } else if (env.BRANCH_NAME == 'dev') {
+                        sh 'make deploy PORT=3001'
+                        sh 'cp src/logo.svg src/logo1.svg'
+			sh 'cp src/logo-dev.svg src/logo.svg'
+                    } else {
+                        echo "Unsupported branch"
+                    }
+                }
+            }
+
+    post {
+        success {
+            echo "Pipeline successful!"
+        }
+        failure {
+            echo "Pipeline failed!"
+        }
+    }
+}
