@@ -43,6 +43,7 @@ pipeline {
                         sh 'cp src/logo.svg src/logo1.svg'
                         sh 'cp src/logo-dev.svg src/logo.svg'
                         sh 'docker run -d -p 3001:3001 --name main-container myapp:latest'
+                    }
                 }
             }
         }
