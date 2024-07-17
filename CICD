@@ -12,13 +12,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'make build'
+                sh 'scripts/build.sh'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'make test'
+                sh 'scripts/test.sh'
             }
         }
 
