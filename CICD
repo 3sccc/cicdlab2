@@ -42,7 +42,7 @@ pipeline {
                     } else if (env.BRANCH_NAME == 'dev') {
                         sh 'cp src/logo.svg src/logo1.svg'
                         sh 'cp src/logo-dev.svg src/logo.svg'
-                        sh 'docker run -p 3001:3001 --name dev-container myapp:latest'
+                        sh 'docker run -p 3001:3000 --name dev-container myapp:latest'
                     }
                 }
             }
