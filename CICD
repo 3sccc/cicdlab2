@@ -17,16 +17,21 @@ pipeline {
         }
 
         stage('Build') {
-            steps {
+        steps {
+            script {
                 if (env.BRANCH_NAME == 'main') {
                     sh 'scripts/build.sh'
                 } else if (env.BRANCH_NAME == 'dev') {
-                    sh 'cp src/logo.svg src/logo1.svg'
-                    sh 'cp src/logo-dev.svg src/logo.svg'
-                    sh 'scripts/build.sh'
+                    sh '''
+                        cp src/logo.svg src/logo1.svg
+                        cp src/logo-dev.svg src/logo.svg
+                        scripts/build.sh
+                    '''
                 }
             }
         }
+    }
+
 
         stage('Test') {
             steps {
