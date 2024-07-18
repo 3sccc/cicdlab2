@@ -40,9 +40,9 @@ pipeline {
             steps {
                 script {
                     if (env.BRANCH_NAME == 'main') {
-                        sh 'docker run -d -p 3000:3000 --name main-container myapp:latest'
+                        sh 'docker run -p 3000:3000 --name main-container myapp:latest'
                     } else if (env.BRANCH_NAME == 'dev') {
-                        sh 'docker run -d -p 3001:3000 --name dev-container myapp:latest'
+                        sh 'docker run -p 3001:3000 --name dev-container myapp:latest'
                     }
                 }
             }
