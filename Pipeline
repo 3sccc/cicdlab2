@@ -1,0 +1,76 @@
+pipeline {
+    agent any
+    parameters {
+        string(name: 'BRANCH', defaultValue: 'dev', description: 'Branch to build and deploy')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    checkout([$class: 'GitSCM', branches: [[name: "*/${params.BRANCH}"]],
+                        userRemoteConfigs: [[url: 'https://github.com/3sccc/cicdlab2.git']]])
+                }
+            }
+        }
+
+        stage('Set Permissions') {
+            steps {
+                sh 'chmod +x scripts/build.sh scripts/test.sh'
+            }
+        }
+
+        stage('Build') {
+        steps {
+            script {
+                sh """
+                    echo ${params.BRANCH}
+                """
+                if (params.BRANCH == 'main') {
+                    sh 'scripts/build.sh'
+                } else if (params.BRANCH == 'dev') {
+                    sh '''
+                        cp src/logo.svg src/logo1.svg
+                        cp src/logo-dev.svg src/logo.svg
+                        scripts/build.sh
+                    '''
+                }
+            }
+        }
+    }
+
+
+        stage('Test') {
+            steps {
+                sh 'scripts/test.sh'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t myapp:latest .'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    if (params.BRANCH == 'main') {
+                        sh 'docker run -p 3000:3000 --name main-container myapp:latest'
+                    } else if (params.BRANCH == 'dev') {
+                        sh 'docker run -p 3001:3000 --name dev-container myapp:latest'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Pipeline successful!"
+        }
+        failure {
+            echo "Pipeline failed!"
+        }
+    }
+}
