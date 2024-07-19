@@ -1,11 +1,15 @@
 pipeline {
     agent any
+    parameters {
+        string(name: 'BRANCH', defaultValue: 'dev', description: 'Branch to build and deploy')
+    }
 
     stages {
         stage('Checkout') {
             steps {
                 script {
-                    checkout scm
+                    checkout([$class: 'GitSCM', branches: [[name: "*/${params.BRANCH}"]],
+                        userRemoteConfigs: [[url: 'https://github.com/3sccc/cicdlab2.git']]])
                 }
             }
         }
