@@ -20,12 +20,11 @@ pipeline {
         steps {
             script {
                 sh """
-                    echo \$BRANCH_NAME
                     echo ${params.BRANCH}
                 """
-                if (env.BRANCH_NAME == 'main') {
+                if (params.BRANCH == 'main') {
                     sh 'scripts/build.sh'
-                } else if (env.BRANCH_NAME == 'dev') {
+                } else if (params.BRANCH == 'dev') {
                     sh '''
                         cp src/logo.svg src/logo1.svg
                         cp src/logo-dev.svg src/logo.svg
