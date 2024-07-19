@@ -19,10 +19,10 @@ pipeline {
         stage('Build') {
         steps {
             script {
-                sh '''
+                sh """
                     echo \$BRANCH_NAME
                     echo ${env.BRANCH_NAME}
-                '''
+                """
                 if (env.BRANCH_NAME == 'main') {
                     sh 'scripts/build.sh'
                 } else if (env.BRANCH_NAME == 'dev') {
