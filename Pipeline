@@ -51,9 +51,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'main') {
+                    if (params.BRANCH == 'main') {
                         sh 'docker run -p 3000:3000 --name main-container myapp:latest'
-                    } else if (env.BRANCH_NAME == 'dev') {
+                    } else if (params.BRANCH == 'dev') {
                         sh 'docker run -p 3001:3000 --name dev-container myapp:latest'
                     }
                 }
